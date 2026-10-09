@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Complete Gaming System</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body, html {
+      width: 100%;
+      min-height: 70vh;
+      background: radial-gradient(circle, rgb(119, 79, 38) 0%, rgba(73, 5, 5, 0.98) 100%);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    .screen {
+      display: none;
+      width: 100vw;
+      min-height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+      flex-direction: column;
+    }
+
+    .active {
+      display: flex;
+    }
+
+    /* 1. SPLASH SCREEN */
+    #splash-screen {
+      justify-content: center;
+      align-items: center;
+      background: rgb(78, 0, 0);
+    }
+
+    .splash-badge {
+      width: 250px;
+      height: 250px;
+      border-radius: 80%;
+      background: rgba(32, 28, 16, 0.08);
+      border: 4px solid #06020e;
+      box-shadow: 0 0 30px #08060f;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: pulse 1s ease-in-out infinite alternate;
+    }
+
+    .badge-inner {
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      background: #47080bad;
+      border: 5px dashed #ff4081;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #e6bb47;
+      font-weight: bold;
+      font-size: 20px;
+      text-shadow: 0 0 10px #00e676;
+      text-align: center;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); }
+      100% { transform: scale(1.05); }
+    }
+
+    /* 2. LOGIN SCREEN */
+    #login-screen {
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-container {
+      background: rgba(17, 1, 1, 0.932);
+      border: 3px solid #0e0030;
+      box-shadow: 0 0 25px rgba(252, 248, 21, 0.973);
+      padding: 30px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 380px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .login-header {
+      text-align: center;
+      color: #ff0000;
+      font-size: 25px;
+      font-weight: bold;
+    }
+
+    .input-group {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .input-group label {
+      color: #0ad1d8;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .input-group input {
+      width: 180px;
+      padding: 8px;
+      background: #fff;
+      border: 2px solid #231c35;
+      border-radius: 4px;
+      color: #000;
+      font-weight: bold;
+      outline: none;
+    }
+
+    .btn {
+      padding: 9px 18px;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 6px;
+      border: 2px solid;
+    }
+
+    .btn-enter { background: #140d07; color: #fff; border-color: #ffd600; width: 100%; }
+    .btn-close { background: #1491cf; color: #80d8ff; border-color: #80d8ff; }
+
+    /* HEADER */
+    .top-bar {
+      height: 55px;
+      background: linear-gradient(90deg, #2a0b12, #0d0005);
+      border-bottom: 2px solid #ff6f00;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 15px;
+      font-weight: bold;
+    }
+
+    .top-bar .info {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+      font-size: 14px;
+    }
+
+    .top-bar .info span { color: #d1cec4; font-weight: 800; }
+
+    /* USER DASHBOARD */
+    .main-body {
+      display: flex;
+      flex: 1;
+      padding: 15px;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .left-panel, .right-panel {
+      width: 230px;
+      background: rgb(0, 230, 199);
+      border: 2px solid #8d6e63;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .game-logo {
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      border: 3px solid #ffab00;
+      background: #3e2723;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #ffd54f;
+      font-weight: bold;
+      text-align: center;
+      margin: 0 auto;
+    }
+
+    .center-content {
+      flex: 1;
+      min-width: 300px;
+      background: rgba(15, 4, 6, 0.9);
+      border: 2px solid #5d4037;
+      border-radius: 8px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .results-display-card {
+      background: #25080c;
+      border: 2px solid #ffab00;
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .res-box {
+      background: #3e1218;
+      border: 1px solid #ff6f00;
+      padding: 8px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .res-box .title { font-size: 13px; color: #76ff03; font-weight: bold; }
+    .res-box .timing { font-size: 10px; color: #00e676; margin: 2px 0; }
+    .res-box .val { font-size: 20px; color: #ffd54f; font-weight: 900; margin-top: 2px; }
+
+    .user-status-card {
+      background: #1d0709;
+      border: 2px solid #76ff03;
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .game-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .game-list li {
+      background: #3e2723;
+      padding: 9px;
+      border-radius: 6px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: bold;
+      border: 1px solid #ff8f00;
+      color: #fff;
+    }
+
+    .game-list li:hover { background: #5d4037; }
+
+    /* GAME PLAY SCREEN */
+    #game-page {
+      padding: 15px;
+      padding-bottom: 80px;
+      background: rgba(10, 2, 4, 0.95);
+    }
+
+    .harup-container {
+      display: flex;
+      gap: 15px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .harup-box-wrapper {
+      flex: 1;
+      min-width: 280px;
+      background: rgba(40, 10, 10, 0.8);
+      border: 1px solid #ff6f00;
+      padding: 8px;
+      border-radius: 6px;
+    }
+
+    .grid-10 {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+      margin-top: 5px;
+    }
+
+    .bet-box {
+      background: #3e2723;
+      border: 1px solid #ff8f00;
+      border-radius: 4px;
+      height: 42px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .bet-box:hover { background: #5d4037; }
+
+    .bet-box .pts-count {
+      font-size: 10px;
+      color: #76ff03;
+      font-weight: 900;
+    }
+
+    .tokens-bar {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin: 15px 0;
+      background: #1b0000;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ff6f00;
+    }
+
+    .token {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      cursor: pointer;
+      border: 2px dashed #fff;
+    }
+
+    .token-10 { background: #29b6f6; color: #000; }
+    .token-50 { background: #ab47bc; color: #fff; }
+    .token-100 { background: #ffa726; color: #000; }
+    .token-500 { background: #66bb6a; color: #000; }
+
+    .token.selected {
+      border: 3px solid #76ff03;
+      transform: scale(1.15);
+    }
+
+    .controls-bar {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    /* ADMIN PANEL STYLES */
+    .admin-container {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 15px;
+      padding: 15px;
+    }
+
+    @media (max-width: 850px) {
+      .admin-container { grid-template-columns: 1fr; }
+      .left-panel, .right-panel { width: 100%; }
+      .results-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .sidebar {
+      background: rgba(30, 10, 15, 0.9);
+      border: 2px solid #8d6e63;
+      border-radius: 8px;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .panel-box {
+      background: #1d0709;
+      border: 1px solid #ff6f00;
+      border-radius: 6px;
+      padding: 12px;
+    }
+
+    .panel-box h3 {
+      color: #76ff03;
+      font-size: 14px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ff6f00;
+      padding-bottom: 4px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      color: #ffd54f;
+      font-weight: bold;
+    }
+
+    .form-group input, .form-group select {
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ffab00;
+      background: #fff;
+      color: #000;
+      font-weight: bold;
+      outline: none;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 12px;
+    }
+
+    .data-table th, .data-table td {
+      border: 1px solid #ff6f00;
+      padding: 6px;
+      text-align: center;
+    }
+
+    .data-table th { background: #3e2723; color: #ffd54f; }
+
+    .req-item {
+      background: #2a0b12;
+      border: 1px solid #ffab00;
+      padding: 8px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+    }
+
+    .admin-4-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .adm-card {
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      border: 2px solid #fff;
+    }
+
+    .c-fb { background: linear-gradient(135deg, #d32f2f, #880e4f); color: #fff; }
+    .c-gb { background: linear-gradient(135deg, #7b1fa2, #311b92); color: #fff; }
+    .c-gl { background: linear-gradient(135deg, #00796b, #004d40); color: #fff; }
+    .c-ds { background: linear-gradient(135deg, #f57c00, #e65100); color: #fff; }
+
+    .adm-card .g-title { font-size: 11px; text-transform: uppercase; opacity: 0.9; }
+    .adm-card .g-res { font-size: 22px; margin-top: 4px; font-weight: 900; color: #ffff00; text-shadow: 0 0 5px #000; }
+
+    .admin-6-games-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .game-filter-btn {
+      background: #3e1218;
+      border: 1px solid #ff6f00;
+      color: #ffd54f;
+      padding: 6px 2px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .game-filter-btn.active {
+      background: #ff6d00;
+      color: #fff;
+      border-color: #ffd600;
+      box-shadow: 0 0 8px #ff6d00;
+    }
+
+    .bets-aggregate-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 8px;
+      max-height: 220px;
+      overflow-y: auto;
+      margin-top: 8px;
+    }
+
+    .agg-card {
+      background: #13007c;
+      border: 1px solid #ff8f00;
+      padding: 6px;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    /* SQUARE COLOR BOXES FOR ADMIN TOTAL WINNING / LOSS STATS */
+    .square-stat-container {
+      display: flex;
+      gap: 15px;
+      justify-content: space-around;
+      margin-top: 12px;
+    }
+
+    .square-stat-card {
+      flex: 1;
+      height: 110px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 10px;
+      font-weight: bold;
+      border: 3px solid #fff;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(0,0,0,0.6);
+      transition: transform 0.2s;
+    }
+
+    .square-stat-card:hover { transform: scale(1.03); }
+
+    .stat-win {
+      background: linear-gradient(135deg, #2e7d32 0%, #1b5e20 100%);
+      border-color: #76ff03;
+      color: #fff;
+    }
+
+    .stat-loss {
+      background: linear-gradient(135deg, #c62828 0%, #8e0000 100%);
+      border-color: #ff1744;
+      color: #fff;
+    }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.88);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .modal-content {
+      background: #20080c;
+      border: 2px solid #ff6f00;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 650px;
+      max-height: 80vh;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .receive-box {
+      background: #102008;
+      border: 1px solid #76ff03;
+      padding: 8px;
+      border-radius: 6px;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .point-history-box {
+      background: #1a0f08;
+      border: 1px solid #ffab00;
+      padding: 8px;
+      border-radius: 6px;
+      margin-top: 8px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. SPLASH SCREEN (5 SEC) -->
+  <div id="splash-screen" class="screen active">
+    <div class="splash-badge">
+      <div class="badge-inner">GAME LOGO</div>
+    </div>
+  </div>
+
+  <!-- 2. LOGIN SCREEN -->
+  <div id="login-screen" class="screen">
+    <form class="login-container" autocomplete="off" onsubmit="event.preventDefault(); handleSystemLogin();">
+      <div class="login-header">THE K GAMING</div>
+      <div id="login-msg" style="color:#3ea035; font-size:13px; text-align:center; font-weight:bold;">Please Now Login</div>
+      
+      <div class="input-group">
+        <label>ACCOUNT</label>
+        <input type="text" id="username" name="app_user_no_history" placeholder="User / Admin ID" autocomplete="new-password">
+      </div>
+
+      <div class="input-group">
+        <label>PASSWORD</label>
+        <input type="password" id="password" name="app_pass_no_history" placeholder="Password" autocomplete="new-password">
+      </div>
+
+      <button type="submit" class="btn btn-enter">ENTER</button>
+    </form>
+  </div>
+
+  <!-- 3. USER DASHBOARD -->
+  <div id="user-dashboard-screen" class="screen">
+    <div class="top-bar">
+      <div class="info">
+        <div>LOGGED ID :- <span id="logged-user-id">GK</span></div>
+        <div>POINTS :- <span id="logged-points">0</span></div>
+      </div>
+      <button class="btn btn-close" onclick="signOutSystem()">SIGN OUT</button>
+    </div>
+
+    <div class="main-body">
+      <!-- LEFT PANEL -->
+      <div class="left-panel">
+        <div class="game-logo">GAME LOGO</div>
+        
+        <div style="text-align:center; color:#76ff03; font-weight:bold; font-size:13px; margin-top:2px;">
+          WELCOME USER
+        </div>
+
+        <!-- 1. TRANSFER POINT TO ADMIN -->
+        <div style="width: 100%; background: #200505; border: 1px solid #ff6f00; padding: 8px; border-radius: 6px; text-align: center;">
+          <div style="color: #76ff03; font-weight: bold; font-size: 11px;">TRANSFER POINT</div>
+          <div style="background: #ffab00; color: #000; font-size: 9px; font-weight: bold; padding: 1px 4px; border-radius: 3px; margin: 3px 0; display: inline-block;">TARGET: ADMIN</div>
+          <input type="number" id="user-transfer-pts-input" name="no_history_pts" placeholder="Points" autocomplete="off" style="width: 100%; padding: 5px; border-radius: 4px; border: 1px solid #ffab00; background: #fff; color: #000; font-weight: bold; font-size: 12px; outline: none;">
+          <button class="btn" style="background: #ff6d00; color: #fff; border-color: #ffd600; width: 100%; margin-top: 5px; padding: 5px; font-size: 11px;" onclick="transferPointsToAdmin()">SEND TO ADMIN</button>
+        </div>
+
+        <!-- 2. RECEIVE POINTS FROM ADMIN -->
+        <div class="receive-box">
+          <div style="color: #00e676; font-weight: bold; font-size: 11px;">RECEIVE POINTS</div>
+          <div id="pending-receive-container" style="margin-top: 5px; font-size: 11px; color: #ffd54f;">
+            No pending points.
+          </div>
+        </div>
+
+        <!-- 3. POINT HISTORY BOX -->
+        <div class="point-history-box">
+          <div style="color: #ffd54f; font-weight: bold; font-size: 11px; border-bottom: 1px solid #ffab00; padding-bottom: 3px;">POINT HISTORY</div>
+          <div id="point-history-container" style="margin-top: 5px; font-size: 10px; max-height: 120px; overflow-y: auto; text-align: left;">
+            No point history.
+          </div>
+        </div>
+      </div>
+
+      <div class="center-content">
+        <!-- BOX 1: LIVE RESULTS -->
+        <div class="results-display-card">
+          <div style="color: #ffd54f; font-weight: bold; border-bottom: 1px solid #ffab00; padding-bottom: 4px;">
+            📢 LIVE DECLARED RESULTS
+          </div>
+          <div class="results-grid" id="user-live-results"></div>
+        </div>
+
+        <!-- BOX 2: USER WIN / LOSS ANNOUNCEMENT CARD -->
+        <div class="user-status-card" id="user-center-status-box">
+          <div style="color: #76ff03; font-weight: bold; font-size: 14px; border-bottom: 1px solid #76ff03; padding-bottom: 4px;">
+            🏆 RESULT ANNOUNCEMENT & STATUS
+          </div>
+          <div id="user-status-text" style="font-size: 13px; color: #ffd54f; margin-top: 10px; font-weight: bold; line-height: 1.5;">
+            No recent game result declared for your bets.
+          </div>
+        </div>
+      </div>
+
+      <div class="right-panel">
+        <h3 style="color:#00e676; text-align:center; border-bottom:1px solid #00e676; padding-bottom:4px;">GAMES</h3>
+        <ul class="game-list">
+          <li onclick="openGame('Faridabad')">Faridabad</li>
+          <li onclick="openGame('Gali')">Gali</li>
+          <li onclick="openGame('Gaziyabad')">Gaziyabad</li>
+          <li onclick="openGame('Dishawar')">Dishawar</li>
+          <li onclick="openGame('Faridabad Old')">Faridabad Old</li>
+          <li onclick="openGame('Dishawar Old')">Dishawar Old</li>
+        </ul>
+        <button class="btn" style="background:#2a0808; color:#ffd54f; border:1px solid #ffab00; margin-top:auto;" onclick="openBetHistoryModal()">📊 BET HISTORY</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. GAME PLAY SCREEN -->
+  <div id="game-page" class="screen">
+    <div style="display:flex; justify-content:space-between; align-items:center; background:#2a0808; padding:10px; border-radius:8px; border:1px solid #ff6f00;">
+      <h2 id="active-game-title" style="color: #ffd54f;">GAME NAME</h2>
+      <div style="color:#00e676; font-weight:bold;">Points: <span id="game-user-pts">0</span></div>
+      <button class="btn btn-close" onclick="closeGamePage()">BACK TO DASHBOARD</button>
+    </div>
+
+    <!-- Harup Grid -->
+    <div class="harup-container">
+      <div class="harup-box-wrapper">
+        <div style="color: #76ff03; font-weight: bold;">A HARUP (0 - 9)</div>
+        <div class="grid-10" id="harup-a-grid"></div>
+      </div>
+      <div class="harup-box-wrapper">
+        <div style="color: #76ff03; font-weight: bold;">B HARUP (0 - 9)</div>
+        <div class="grid-10" id="harup-b-grid"></div>
+      </div>
+    </div>
+
+    <!-- Jodi Grid -->
+    <div style="margin-top: 15px;">
+      <div style="color: #76ff03; font-weight: bold; margin-bottom: 5px;">00 TO 99 JODI NUMBERS</div>
+      <div class="grid-10" id="jodi-grid"></div>
+    </div>
+
+    <!-- Tokens Bar -->
+    <div class="tokens-bar">
+      <div class="token token-10 selected" onclick="selectToken(10, this)">10</div>
+      <div class="token token-50" onclick="selectToken(50, this)">50</div>
+      <div class="token token-100" onclick="selectToken(100, this)">100</div>
+      <div class="token token-500" onclick="selectToken(500, this)">500</div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls-bar">
+      <button class="btn" style="background:#00c853; color:#fff; border-color:#b9f6ca;" onclick="handleBetOK()">BET OK</button>
+      <button class="btn" style="background:#d50000; color:#fff; border-color:#ff8a80;" onclick="handleAllCancel()">ALL CANCEL</button>
+      <button class="btn" style="background:#ff6d00; color:#fff; border-color:#ffe082;" onclick="handleUndo()">UNDO LAST</button>
+    </div>
+  </div>
+
+  <!-- 5. ADMIN CONTROL PANEL -->
+  <div id="admin-dashboard-screen" class="screen">
+    <div class="top-bar">
+      <div style="color:#ffd54f; font-weight:bold;">CONTROL PANEL ADMIN</div>
+      <button class="btn btn-close" onclick="signOutSystem()">SIGN OUT</button>
+    </div>
+
+    <div class="admin-container">
+      <div class="sidebar">
+        <!-- CREATE USER -->
+        <div class="panel-box">
+          <h3>👤 CREATE / EDIT USER ID</h3>
+          <div class="form-group">
+            <label>USER ID</label>
+            <input type="text" id="adm-user-id" placeholder="e.g. USER101" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label>PASSWORD</label>
+            <input type="text" id="adm-user-pass" placeholder="Password" autocomplete="off">
+          </div>
+          <button class="btn" style="background:#00c853; color:#fff; width:100%; border-color:#b9f6ca;" onclick="adminCreateUser()">SAVE / UPDATE USER</button>
+        </div>
+
+        <!-- POINT TRANSFER TO USER -->
+        <div class="panel-box">
+          <h3>💰 TRANSFER POINTS TO USER</h3>
+          <div class="form-group">
+            <label>SELECT USER</label>
+            <select id="adm-select-user">
+              <option value="">-- Choose User --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>POINTS</label>
+            <input type="number" id="adm-transfer-pts" placeholder="Points" autocomplete="off">
+          </div>
+          <button class="btn" style="background:#ff6d00; color:#fff; width:100%; border-color:#ffd600;" onclick="adminTransferPoints()">SEND POINTS</button>
+        </div>
+
+        <!-- PENDING USER REQUESTS -->
+        <div class="panel-box">
+          <h3>📥 PENDING USER REQUESTS</h3>
+          <div id="admin-pending-user-requests" style="max-height: 120px; overflow-y: auto;">
+            No user requests.
+          </div>
+        </div>
+
+        <!-- ADMIN USER TRANSACTIONS HISTORY -->
+        <div class="panel-box">
+          <h3>📜 USER TRANSACTIONS HISTORY</h3>
+          <div id="admin-transactions-history-box" style="max-height: 120px; overflow-y: auto; font-size: 10px; color: #ffd54f;">
+            No transactions recorded.
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:15px;">
+        <!-- DECLARE RESULT -->
+        <div class="panel-box">
+          <h3>🎲 RESULT DECLARATION PANEL</h3>
+          <div style="display:flex; gap:15px; align-items:center; margin-top:10px; flex-wrap:wrap;">
+            <select id="adm-game-select" style="padding:6px; font-weight:bold;" onchange="selectAdminGameFilter(this.value)">
+              <option value="Faridabad">Faridabad</option>
+              <option value="Gaziyabad">Gaziyabad</option>
+              <option value="Gali">Gali</option>
+              <option value="Dishawar">Dishawar</option>
+              <option value="Faridabad Old">Faridabad Old</option>
+              <option value="Dishawar Old">Dishawar Old</option>
+            </select>
+
+            <input type="text" id="adm-selected-result" placeholder="Result" readonly style="width:120px; padding:6px; font-weight:bold; text-align:center;">
+            
+            <button class="btn" style="background:#29b6f6; color:#000;" onclick="openResultModal()">🎯 CHOOSE NUMBER</button>
+            <button class="btn" style="background:#d50000; color:#fff;" onclick="adminDeclareResult()">DECLARE NOW</button>
+          </div>
+        </div>
+
+        <!-- 4 COLOR CARDS FOR DECLARED RESULTS -->
+        <div class="admin-4-cards-grid">
+          <div class="adm-card c-fb">
+            <div class="g-title">FARIDABAD</div>
+            <div class="g-res" id="adm-card-fb">--</div>
+          </div>
+          <div class="adm-card c-gb">
+            <div class="g-title">GAZIYABAD</div>
+            <div class="g-res" id="adm-card-gb">--</div>
+          </div>
+          <div class="adm-card c-gl">
+            <div class="g-title">GALI</div>
+            <div class="g-res" id="adm-card-gl">--</div>
+          </div>
+          <div class="adm-card c-ds">
+            <div class="g-title">DISHAWAR</div>
+            <div class="g-res" id="adm-card-ds">--</div>
+          </div>
+        </div>
+
+        <!-- AGGREGATED LIVE BETS ON NUMBERS WITH 6 GAME FILTERS -->
+        <div class="panel-box">
+          <h3 id="adm-bets-header-title">📊 AGGREGATED LIVE BETS ON NUMBERS (FARIDABAD)</h3>
+          
+          <div class="admin-6-games-grid">
+            <div class="game-filter-btn active" id="btn-g-Faridabad" onclick="selectAdminGameFilter('Faridabad')">Faridabad</div>
+            <div class="game-filter-btn" id="btn-g-Gaziyabad" onclick="selectAdminGameFilter('Gaziyabad')">Gaziyabad</div>
+            <div class="game-filter-btn" id="btn-g-Gali" onclick="selectAdminGameFilter('Gali')">Gali</div>
+            <div class="game-filter-btn" id="btn-g-Dishawar" onclick="selectAdminGameFilter('Dishawar')">Dishawar</div>
+            <div class="game-filter-btn" id="btn-g-Faridabad-Old" onclick="selectAdminGameFilter('Faridabad Old')">Faridabad Old</div>
+            <div class="game-filter-btn" id="btn-g-Dishawar-Old" onclick="selectAdminGameFilter('Dishawar Old')">Dishawar Old</div>
+          </div>
+
+          <div class="bets-aggregate-grid" id="admin-aggregate-bets-box"></div>
+        </div>
+
+        <!-- CREATED USERS TABLE & SQUARE WIN/LOSS STATS -->
+        <div class="panel-box">
+          <h3>📋 CREATED USERS & BALANCE</h3>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Password</th>
+                <th>Points Balance</th>
+              </tr>
+            </thead>
+            <tbody id="admin-users-table"></tbody>
+          </table>
+
+          <!-- 2 SQUARE COLOR BOXES FOR TOTAL USER WIN / LOSS STATS -->
+          <div class="square-stat-container">
+            <div class="square-stat-card stat-win" onclick="openUserTxCalcModal()">
+              <div style="font-size:12px; font-weight:bold;">TOTAL USER WINNING</div>
+              <div style="font-size:22px; margin:6px 0;" id="adm-total-user-win">0 P</div>
+              <div style="font-size:9px; opacity:0.9;">🔍 Click for User Transactions & Calc</div>
+            </div>
+
+            <div class="square-stat-card stat-loss" onclick="openUserTxCalcModal()">
+              <div style="font-size:12px; font-weight:bold;">TOTAL USER LOSS</div>
+              <div style="font-size:22px; margin:6px 0;" id="adm-total-user-loss">0 P</div>
+              <div style="font-size:9px; opacity:0.9;">🔍 Click for User Transactions & Calc</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: BET HISTORY -->
+  <div id="bet-history-modal" class="modal">
+    <div class="modal-content">
+      <h3 style="color: #ffd54f; border-bottom: 1px solid #ffd54f; padding-bottom: 5px;">MY BET HISTORY</h3>
+      <div id="bet-history-list" style="margin-top:10px; max-height:250px; overflow-y:auto;"></div>
+      <button class="btn btn-close" style="margin-top: 15px;" onclick="closeModal('bet-history-modal')">CLOSE</button>
+    </div>
+  </div>
+
+  <!-- MODAL: RESULT SELECTOR GRID -->
+  <div id="result-modal" class="modal">
+    <div class="modal-content">
+      <h3 style="color: #ffd54f; border-bottom: 1px solid #ffd54f; padding-bottom: 5px;">SELECT RESULT NUMBER</h3>
+      <div class="grid-10" id="modal-result-grid" style="grid-template-columns: repeat(10, 1fr); margin-top:10px;"></div>
+      <button class="btn" style="margin-top: 15px; background:#d50000; color:#fff;" onclick="closeModal('result-modal')">CANCEL</button>
+    </div>
+  </div>
+
+  <!-- MODAL: USER TRANSACTIONS & CALCULATIONS DETAIL POPUP -->
+  <div id="user-tx-calc-modal" class="modal">
+    <div class="modal-content">
+      <h3 style="color: #76ff03; border-bottom: 1px solid #76ff03; padding-bottom: 5px; text-align:center;">
+        📑 ALL USERS TRANSACTIONS & BALANCE CALCULATION
+      </h3>
+      
+      <table class="data-table" style="margin-top:12px;">
+        <thead>
+          <tr>
+            <th>User ID</th>
+            <th>Received (From Admin)</th>
+            <th>Transferred (To Admin)</th>
+            <th>Calculated Net Balance</th>
+          </tr>
+        </thead>
+        <tbody id="user-tx-calc-table-body"></tbody>
+      </table>
+
+      <button class="btn btn-close" style="margin-top: 15px; width:100%;" onclick="closeModal('user-tx-calc-modal')">CLOSE</button>
+    </div>
+  </div>
+
+  <script>
+    const gameTimings = {
+      "Faridabad": "Last 5:30 | Open 6:00",
+      "Gaziyabad": "Last 9:20 | Open 9:55",
+      "Gali": "Last 11:00 | Open 11:55",
+      "Dishawar": "Last 1:00 | Open 5:00",
+      "Faridabad Old": "Last 4:00 | Open 4:30",
+      "Dishawar Old": "Last 2:00 | Open 3:00"
+    };
+
+    let selectedAdminGame = "Faridabad";
+
+    function getUsersDB() {
+      let data = localStorage.getItem('app_users_db');
+      return data ? JSON.parse(data) : { "GK": { pass: "1234", points: 10000 } };
+    }
+
+    function saveUsersDB(db) {
+      localStorage.setItem('app_users_db', JSON.stringify(db));
+    }
+
+    function getUserBetsDB() {
+      let data = localStorage.getItem('app_user_bets_db');
+      return data ? JSON.parse(data) : {};
+    }
+
+    function saveUserBetsDB(bets) {
+      localStorage.setItem('app_user_bets_db', JSON.stringify(bets));
+    }
+
+    function getPointHistoryDB() {
+      let data = localStorage.getItem('app_point_history_db');
+      return data ? JSON.parse(data) : {};
+    }
+
+    function addPointHistory(uid, type, pts) {
+      let history = getPointHistoryDB();
+      if (!history[uid]) history[uid] = [];
+      history[uid].unshift({
+        type: type,
+        points: pts,
+        time: new Date().toLocaleTimeString()
+      });
+      localStorage.setItem('app_point_history_db', JSON.stringify(history));
+    }
+
+    function addAdminTxLog(uid, type, pts) {
+      let logs = JSON.parse(localStorage.getItem('app_admin_tx_logs') || '[]');
+      logs.unshift({
+        user: uid,
+        type: type,
+        pts: pts,
+        time: new Date().toLocaleTimeString()
+      });
+      localStorage.setItem('app_admin_tx_logs', JSON.stringify(logs));
+    }
+
+    let currentUser = "";
+    let userPoints = 0;
+    let selectedToken = 10;
+    let currentGameName = "";
+    let currentBets = {};
+    let audioCtx = null;
+
+    function playBeepSound() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let osc = audioCtx.createOscillator();
+        let gain = audioCtx.createGain();
+        osc.type = "sine"; osc.frequency.value = 850; gain.gain.value = 0.08;
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.07);
+      } catch (e) {}
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        showScreen('login-screen');
+      }, 5000);
+
+      initGrids();
+      renderLiveResults();
+
+      setInterval(() => {
+        if (document.getElementById('admin-dashboard-screen').classList.contains('active')) {
+          renderAggregatedBets();
+          renderAdminPendingUserReqs();
+          calculateTotalUserWinLoss();
+        }
+      }, 2000);
+    });
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function handleSystemLogin() {
+      let idInput = document.getElementById('username').value.trim();
+      let passInput = document.getElementById('password').value.trim();
+      let msg = document.getElementById('login-msg');
+
+      if (idInput.toUpperCase() === "ADMIN" && (passInput === "ksk030804" || passInput === "ksk0308")) {
+        msg.innerText = "";
+        renderAdminUI();
+        showScreen('admin-dashboard-screen');
+        return;
+      }
+
+      let db = getUsersDB();
+      if (db[idInput] && db[idInput].pass === passInput) {
+        msg.innerText = "";
+        currentUser = idInput;
+        userPoints = db[idInput].points || 0;
+
+        updateUserPointsUI();
+        checkPendingTransfers();
+        renderPointHistory();
+        showScreen('user-dashboard-screen');
+
+        checkUserResultStatus();
+      } else {
+        msg.style.color = "#ff1744";
+        msg.innerText = "WRONG USER ID OR PASSWORD!";
+        setTimeout(() => { msg.innerText = "Please Now Login"; msg.style.color = "#ffab00"; }, 4000);
+      }
+    }
+
+    function updateUserPointsUI() {
+      document.getElementById('logged-user-id').innerText = currentUser;
+      document.getElementById('logged-points').innerText = userPoints;
+      document.getElementById('game-user-pts').innerText = userPoints;
+    }
+
+    function signOutSystem() {
+      document.getElementById('username').value = "";
+      document.getElementById('password').value = "";
+      showScreen('login-screen');
+    }
+
+    /* TRANSFER TO ADMIN */
+    function transferPointsToAdmin() {
+      let ptsInput = document.getElementById('user-transfer-pts-input');
+      let pts = parseInt(ptsInput.value);
+
+      if (!pts || pts <= 0) { alert("Enter a valid points amount!"); return; }
+      if (pts > userPoints) { alert("Insufficient Points balance!"); return; }
+
+      userPoints -= pts;
+      updateUserPointsUI();
+
+      let db = getUsersDB();
+      if (db[currentUser]) {
+        db[currentUser].points = userPoints;
+        saveUsersDB(db);
+      }
+
+      let reqs = JSON.parse(localStorage.getItem('app_user_to_admin_reqs') || '[]');
+      reqs.unshift({ user: currentUser, points: pts, time: new Date().toLocaleTimeString() });
+      localStorage.setItem('app_user_to_admin_reqs', JSON.stringify(reqs));
+
+      addPointHistory(currentUser, "Sent to Admin", pts);
+      renderPointHistory();
+
+      alert(`${pts} Points Sent To Admin Successfully!`);
+      ptsInput.value = "";
+    }
+
+    /* CHECK RECEIVE POINTS FROM ADMIN */
+    function checkPendingTransfers() {
+      let transfers = JSON.parse(localStorage.getItem('app_admin_transfers') || '{}');
+      let container = document.getElementById('pending-receive-container');
+
+      if (transfers[currentUser] && transfers[currentUser].length > 0) {
+        container.innerHTML = "";
+        transfers[currentUser].forEach((t, idx) => {
+          container.innerHTML += `
+            <div style="background:#1b3310; border:1px solid #00e676; padding:4px; margin-top:4px; border-radius:4px;">
+              <div>+${t.points} P</div>
+              <button class="btn" style="background:#00c853; color:#fff; padding:2px 6px; font-size:10px; margin-top:3px;" onclick="acceptPoints(${idx}, ${t.points})">RECEIVE</button>
+            </div>
+          `;
+        });
+      } else {
+        container.innerHTML = "No pending points.";
+      }
+    }
+
+    function acceptPoints(idx, pts) {
+      userPoints += pts;
+      updateUserPointsUI();
+
+      let db = getUsersDB();
+      if (db[currentUser]) {
+        db[currentUser].points = userPoints;
+        saveUsersDB(db);
+      }
+
+      let transfers = JSON.parse(localStorage.getItem('app_admin_transfers') || '{}');
+      if (transfers[currentUser]) {
+        transfers[currentUser].splice(idx, 1);
+        localStorage.setItem('app_admin_transfers', JSON.stringify(transfers));
+      }
+
+      addPointHistory(currentUser, "Received from Admin", pts);
+
+      checkPendingTransfers();
+      renderPointHistory();
+      alert(`${pts} Points Received & Added To Balance!`);
+    }
+
+    /* RENDER POINT HISTORY */
+    function renderPointHistory() {
+      let history = getPointHistoryDB();
+      let userList = history[currentUser] || [];
+      let container = document.getElementById('point-history-container');
+
+      if (userList.length === 0) {
+        container.innerHTML = "No point history.";
+      } else {
+        container.innerHTML = "";
+        userList.forEach(item => {
+          let color = item.type === "Received from Admin" ? "#76ff03" : "#ff1744";
+          let sign = item.type === "Received from Admin" ? "+" : "-";
+          container.innerHTML += `
+            <div style="border-bottom: 1px solid #3e2723; padding: 3px 0;">
+              <span style="color:${color}; font-weight:bold;">${sign}${item.points} P</span>
+              <span style="color:#aaa; font-size:9px;"> (${item.type})</span>
+              <div style="color:#666; font-size:8px;">${item.time}</div>
+            </div>
+          `;
+        });
+      }
+    }
+
+    function initGrids() {
+      let ha = document.getElementById('harup-a-grid');
+      let hb = document.getElementById('harup-b-grid');
+      let jodi = document.getElementById('jodi-grid');
+      let modalGrid = document.getElementById('modal-result-grid');
+
+      for (let i = 0; i <= 9; i++) {
+        ha.appendChild(createBetBox(`A-${i}`, `A-${i}`));
+        hb.appendChild(createBetBox(`B-${i}`, `B-${i}`));
+      }
+
+      for (let i = 0; i <= 99; i++) {
+        let valStr = i < 10 ? '0' + i : '' + i;
+        jodi.appendChild(createBetBox(`J-${valStr}`, valStr));
+
+        let mItem = document.createElement('div');
+        mItem.className = 'bet-box';
+        mItem.innerText = valStr;
+        mItem.onclick = () => {
+          document.getElementById('adm-selected-result').value = valStr;
+          closeModal('result-modal');
+        };
+        modalGrid.appendChild(mItem);
+      }
+    }
+
+    function createBetBox(boxId, displayLabel) {
+      let div = document.createElement('div');
+      div.className = 'bet-box';
+      div.id = boxId;
+      div.innerHTML = `<div>${displayLabel}</div><div class="pts-count" id="cnt-${boxId}"></div>`;
+      div.onclick = () => onNumberClick(boxId);
+      return div;
+    }
+
+    function selectToken(val, el) {
+      playBeepSound();
+      selectedToken = val;
+      document.querySelectorAll('.token').forEach(t => t.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    function onNumberClick(boxId) {
+      if (userPoints < selectedToken) { alert("Insufficient Points!"); return; }
+
+      playBeepSound();
+      userPoints -= selectedToken;
+      updateUserPointsUI();
+
+      if (!currentBets[boxId]) currentBets[boxId] = 0;
+      currentBets[boxId] += selectedToken;
+
+      document.getElementById(`cnt-${boxId}`).innerText = `${currentBets[boxId]}P`;
+    }
+
+    function handleUndo() {
+      playBeepSound();
+      handleAllCancel();
+    }
+
+    function handleAllCancel() {
+      playBeepSound();
+      for (let boxId in currentBets) {
+        userPoints += currentBets[boxId];
+        document.getElementById(`cnt-${boxId}`).innerText = "";
+      }
+      currentBets = {};
+      updateUserPointsUI();
+    }
+
+    /* BET CONFIRMATION LOGIC */
+    function handleBetOK() {
+      if (Object.keys(currentBets).length === 0) { alert("Select numbers first!"); return; }
+      playBeepSound();
+
+      let db = getUsersDB();
+      if (db[currentUser]) {
+        db[currentUser].points = userPoints;
+        saveUsersDB(db);
+      }
+
+      let allBets = getUserBetsDB();
+      if (!allBets[currentUser]) allBets[currentUser] = {};
+
+      let timeStr = new Date().toLocaleTimeString();
+
+      for (let boxId in currentBets) {
+        let cleanNum = boxId.replace("J-", "");
+        let key = `${currentGameName}_${cleanNum}`;
+
+        if (allBets[currentUser][key]) {
+          allBets[currentUser][key].pts += currentBets[boxId];
+          allBets[currentUser][key].time = timeStr;
+          allBets[currentUser][key].status = "pending";
+        } else {
+          allBets[currentUser][key] = {
+            time: timeStr,
+            game: currentGameName,
+            num: cleanNum,
+            pts: currentBets[boxId],
+            status: "pending"
+          };
+        }
+
+        document.getElementById(`cnt-${boxId}`).innerText = "";
+      }
+
+      saveUserBetsDB(allBets);
+      currentBets = {};
+      alert("Bet Confirmed & Merged Successfully!");
+    }
+
+    function openGame(gName) {
+      currentGameName = gName;
+      document.getElementById('active-game-title').innerText = gName;
+      handleAllCancel();
+      showScreen('game-page');
+    }
+
+    function closeGamePage() {
+      handleAllCancel();
+      showScreen('user-dashboard-screen');
+    }
+
+    function renderLiveResults() {
+      let results = JSON.parse(localStorage.getItem('app_results_db') || '{}');
+      let grid = document.getElementById('user-live-results');
+      grid.innerHTML = "";
+      let games = ['Faridabad', 'Gaziyabad', 'Gali', 'Dishawar', 'Faridabad Old', 'Dishawar Old'];
+      games.forEach(g => {
+        let timeText = gameTimings[g] || '';
+        grid.innerHTML += `
+          <div class="res-box">
+            <div class="title">${g}</div>
+            <div class="timing">${timeText}</div>
+            <div class="val">${results[g] || '--'}</div>
+          </div>
+        `;
+      });
+
+      // Update Admin Color Cards
+      document.getElementById('adm-card-fb').innerText = results['Faridabad'] || '--';
+      document.getElementById('adm-card-gb').innerText = results['Gaziyabad'] || '--';
+      document.getElementById('adm-card-gl').innerText = results['Gali'] || '--';
+      document.getElementById('adm-card-ds').innerText = results['Dishawar'] || '--';
+    }
+
+    function openBetHistoryModal() {
+      let container = document.getElementById('bet-history-list');
+      container.innerHTML = "";
+      
+      let allBets = getUserBetsDB();
+      let userMap = allBets[currentUser] || {};
+      let keys = Object.keys(userMap);
+
+      if (keys.length === 0) {
+        container.innerText = "No bets placed yet.";
+      } else {
+        keys.forEach(k => {
+          let b = userMap[k];
+          let statusText = b.status === "win" ? "<span style='color:#76ff03;'>WIN</span>" : (b.status === "loss" ? "<span style='color:#ff1744;'>LOSS</span>" : "PENDING");
+          container.innerHTML += `<div style="padding:6px; border-bottom:1px solid #ff6f00; font-size:12px;">[${b.time}] <b>${b.game}</b> - No: <span style="color:#ffd54f; font-weight:bold;">${b.num}</span> -> Points: <span style="color:#00e676; font-weight:bold;">${b.pts} P</span> (${statusText})</div>`;
+        });
+      }
+      document.getElementById('bet-history-modal').style.display = 'flex';
+    }
+
+    /* WIN/LOSS DISPLAYED DIRECTLY IN DASHBOARD CARD */
+    function checkUserResultStatus() {
+      if (!currentUser) return;
+
+      let allBets = getUserBetsDB();
+      let userMap = allBets[currentUser] || {};
+      let results = JSON.parse(localStorage.getItem('app_results_db') || '{}');
+
+      let totalWinPts = 0;
+      let winDetails = [];
+      let lossDetails = [];
+
+      for (let k in userMap) {
+        let bet = userMap[k];
+        if (bet.status === "pending" && results[bet.game]) {
+          let declaredNum = results[bet.game];
+          if (bet.num === declaredNum) {
+            let winAmt = bet.pts * 90;
+            totalWinPts += winAmt;
+            winDetails.push(`🎉 <b>${bet.game}</b> - Number [${bet.num}] -> Won <span style="color:#76ff03;">+${winAmt} Points</span>`);
+            bet.status = "win";
+          } else {
+            lossDetails.push(`💔 <b>${bet.game}</b> - Number [${bet.num}] -> <span style="color:#ff1744;">Loss ${bet.pts} P</span>`);
+            bet.status = "loss";
+          }
+        }
+      }
+
+      if (totalWinPts > 0) {
+        userPoints += totalWinPts;
+        let db = getUsersDB();
+        if (db[currentUser]) {
+          db[currentUser].points = userPoints;
+          saveUsersDB(db);
+        }
+        updateUserPointsUI();
+      }
+
+      saveUserBetsDB(allBets);
+
+      let statusBox = document.getElementById('user-status-text');
+
+      if (winDetails.length > 0) {
+        statusBox.innerHTML = winDetails.join("<br>") + `<br><br><span style="color:#76ff03; font-weight:bold;">🎉 CONGRATULATIONS! Winnings added to balance!</span>`;
+      } else if (lossDetails.length > 0) {
+        statusBox.innerHTML = lossDetails.join("<br>") + `<br><br><span style="color:#ffab00;">Better luck next time!</span>`;
+      } else {
+        statusBox.innerHTML = "No new game result declared for your bets.";
+      }
+    }
+
+    /* ADMIN ACTIONS */
+    function adminCreateUser() {
+      let uid = document.getElementById('adm-user-id').value.trim();
+      let pass = document.getElementById('adm-user-pass').value.trim();
+
+      if (!uid || !pass) { alert("Enter both User ID and Password!"); return; }
+
+      let db = getUsersDB();
+      if (!db[uid]) db[uid] = { pass: pass, points: 0 };
+      else db[uid].pass = pass;
+
+      saveUsersDB(db);
+      renderAdminUI();
+
+      alert(`User ${uid} Created/Updated Successfully!`);
+      document.getElementById('adm-user-id').value = "";
+      document.getElementById('adm-user-pass').value = "";
+    }
+
+    function adminTransferPoints() {
+      let uid = document.getElementById('adm-select-user').value;
+      let pts = parseInt(document.getElementById('adm-transfer-pts').value);
+
+      if (!uid || !pts || pts <= 0) { alert("Select User and enter valid points!"); return; }
+
+      let transfers = JSON.parse(localStorage.getItem('app_admin_transfers') || '{}');
+      if (!transfers[uid]) transfers[uid] = [];
+      
+      transfers[uid].push({ points: pts, time: new Date().toLocaleTimeString() });
+      localStorage.setItem('app_admin_transfers', JSON.stringify(transfers));
+
+      addAdminTxLog(uid, "Sent Points", pts);
+
+      renderAdminTxLogs();
+      alert(`${pts} Points Sent To ${uid}! (User will see it in RECEIVE BOX)`);
+      document.getElementById('adm-transfer-pts').value = "";
+    }
+
+    function renderAdminPendingUserReqs() {
+      let reqs = JSON.parse(localStorage.getItem('app_user_to_admin_reqs') || '[]');
+      let container = document.getElementById('admin-pending-user-requests');
+
+      if (reqs.length === 0) {
+        container.innerHTML = "No user requests.";
+      } else {
+        container.innerHTML = "";
+        reqs.forEach((r, idx) => {
+          container.innerHTML += `
+            <div class="req-item">
+              <div><b>${r.user}</b>: ${r.points} P <br><span style="color:#888; font-size:9px;">${r.time}</span></div>
+              <div style="display:flex; gap:4px;">
+                <button class="btn" style="background:#00c853; color:#fff; padding:2px 6px; font-size:10px;" onclick="approveUserReq(${idx})">ACCEPT</button>
+                <button class="btn" style="background:#d50000; color:#fff; padding:2px 6px; font-size:10px;" onclick="rejectUserReq(${idx})">REJECT</button>
+              </div>
+            </div>
+          `;
+        });
+      }
+    }
+
+    function approveUserReq(idx) {
+      let reqs = JSON.parse(localStorage.getItem('app_user_to_admin_reqs') || '[]');
+      if (reqs[idx]) {
+        let r = reqs[idx];
+        addAdminTxLog(r.user, "Received Request Accepted", r.points);
+        reqs.splice(idx, 1);
+        localStorage.setItem('app_user_to_admin_reqs', JSON.stringify(reqs));
+
+        renderAdminPendingUserReqs();
+        renderAdminTxLogs();
+        alert(`Request of ${r.points} Points from User ${r.user} Approved!`);
+      }
+    }
+
+    function rejectUserReq(idx) {
+      let reqs = JSON.parse(localStorage.getItem('app_user_to_admin_reqs') || '[]');
+      if (reqs[idx]) {
+        let r = reqs[idx];
+        
+        let usersDB = getUsersDB();
+        if (usersDB[r.user]) {
+          usersDB[r.user].points = (usersDB[r.user].points || 0) + r.points;
+          saveUsersDB(usersDB);
+        }
+
+        addAdminTxLog(r.user, "Received Request Rejected (Refunded)", r.points);
+
+        reqs.splice(idx, 1);
+        localStorage.setItem('app_user_to_admin_reqs', JSON.stringify(reqs));
+
+        renderAdminPendingUserReqs();
+        renderAdminUI();
+        renderAdminTxLogs();
+        alert(`Request Rejected & ${r.points} Points Refunded to ${r.user}!`);
+      }
+    }
+
+    function renderAdminTxLogs() {
+      let logs = JSON.parse(localStorage.getItem('app_admin_tx_logs') || '[]');
+      let container = document.getElementById('admin-transactions-history-box');
+
+      if (logs.length === 0) {
+        container.innerHTML = "No transactions recorded.";
+      } else {
+        container.innerHTML = "";
+        logs.forEach(l => {
+          let col = l.type.includes("Sent") ? "#76ff03" : "#ffab00";
+          container.innerHTML += `
+            <div style="border-bottom:1px solid #3e2723; padding:2px 0;">
+              <span style="color:${col}; font-weight:bold;">${l.user}</span>: ${l.pts} P (${l.type})
+              <div style="color:#777; font-size:8px;">${l.time}</div>
+            </div>
+          `;
+        });
+      }
+    }
+
+    /* 6 GAME FILTER CLICK HANDLER */
+    function selectAdminGameFilter(gName) {
+      selectedAdminGame = gName;
+      document.getElementById('adm-game-select').value = gName;
+      document.getElementById('adm-bets-header-title').innerText = `📊 AGGREGATED LIVE BETS ON NUMBERS (${gName.toUpperCase()})`;
+
+      document.querySelectorAll('.game-filter-btn').forEach(btn => btn.classList.remove('active'));
+      let btnId = 'btn-g-' + gName.replace(' ', '-');
+      let activeBtn = document.getElementById(btnId);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      renderAggregatedBets();
+    }
+
+    /* AGGREGATED LIVE BETS CALCULATION FOR ALL USERS ON A NUMBER */
+    function renderAggregatedBets() {
+      let allUserBets = getUserBetsDB();
+      let totals = {};
+
+      for (let uid in allUserBets) {
+        for (let key in allUserBets[uid]) {
+          let b = allUserBets[uid][key];
+          if (b.game === selectedAdminGame && b.status === "pending") {
+            totals[b.num] = (totals[b.num] || 0) + b.pts;
+          }
+        }
+      }
+
+      let container = document.getElementById('admin-aggregate-bets-box');
+      let keys = Object.keys(totals);
+
+      if (keys.length === 0) {
+        container.innerHTML = `<div style='font-size:12px; color:#aaa; width:100%; text-align:center;'>No live bets on ${selectedAdminGame}</div>`;
+      } else {
+        container.innerHTML = "";
+        keys.forEach(num => {
+          container.innerHTML += `
+            <div class="agg-card">
+              <div style="color:#76ff03; font-weight:bold;">No: ${num}</div>
+              <div style="color:#ffd54f; font-weight:bold; font-size:13px;">${totals[num]} P</div>
+            </div>
+          `;
+        });
+      }
+    }
+
+    /* CALCULATE TOTAL WINNING & LOSS HISTORY FOR ALL USERS */
+    function calculateTotalUserWinLoss() {
+      let allBets = getUserBetsDB();
+      let totalWin = 0;
+      let totalLoss = 0;
+
+      for (let uid in allBets) {
+        for (let key in allBets[uid]) {
+          let bet = allBets[uid][key];
+          if (bet.status === "win") {
+            totalWin += (bet.pts * 90);
+          } else if (bet.status === "loss") {
+            totalLoss += bet.pts;
+          }
+        }
+      }
+
+      document.getElementById('adm-total-user-win').innerText = `${totalWin} P`;
+      document.getElementById('adm-total-user-loss').innerText = `${totalLoss} P`;
+    }
+
+    /* OPEN USER TX & CALCULATIONS MODAL */
+    function openUserTxCalcModal() {
+      let usersDB = getUsersDB();
+      let logs = JSON.parse(localStorage.getItem('app_admin_tx_logs') || '[]');
+      let tbody = document.getElementById('user-tx-calc-table-body');
+      tbody.innerHTML = "";
+
+      for (let uid in usersDB) {
+        let totalReceived = 0;
+        let totalTransferred = 0;
+
+        logs.forEach(l => {
+          if (l.user === uid) {
+            if (l.type.includes("Sent")) totalReceived += l.pts;
+            if (l.type.includes("Accepted")) totalTransferred += l.pts;
+          }
+        });
+
+        let netCalc = totalReceived - totalTransferred;
+        let netColor = netCalc >= 0 ? "#76ff03" : "#ff1744";
+        let sign = netCalc >= 0 ? "+" : "";
+
+        tbody.innerHTML += `
+          <tr>
+            <td style="font-weight:bold; color:#ffd54f;">${uid}</td>
+            <td style="color:#00e676;">+${totalReceived} P</td>
+            <td style="color:#ff6d00;">-${totalTransferred} P</td>
+            <td style="color:${netColor}; font-weight:bold;">${sign}${netCalc} P</td>
+          </tr>
+        `;
+      }
+
+      document.getElementById('user-tx-calc-modal').style.display = 'flex';
+    }
+
+    function adminDeclareResult() {
+      let game = document.getElementById('adm-game-select').value;
+      let val = document.getElementById('adm-selected-result').value;
+
+      if (!val) { alert("Select result number first!"); return; }
+
+      let results = JSON.parse(localStorage.getItem('app_results_db') || '{}');
+      results[game] = val;
+      localStorage.setItem('app_results_db', JSON.stringify(results));
+
+      let usersDB = getUsersDB();
+      let allUserBets = getUserBetsDB();
+      let winKey = `${game}_${val}`;
+      let winnersCount = 0;
+
+      for (let uid in allUserBets) {
+        if (allUserBets[uid][winKey] && allUserBets[uid][winKey].status === "pending") {
+          let betPts = allUserBets[uid][winKey].pts || 0;
+          let winAmount = betPts * 90;
+
+          if (usersDB[uid]) {
+            usersDB[uid].points = (usersDB[uid].points || 0) + winAmount;
+            winnersCount++;
+          }
+        }
+      }
+
+      saveUsersDB(usersDB);
+      renderLiveResults();
+      renderAdminUI();
+      renderAggregatedBets();
+      calculateTotalUserWinLoss();
+
+      alert(`Result Declared!\n${game} => ${val}\nWinners Updated: ${winnersCount} user(s) awarded (90x Multiplier).`);
+      document.getElementById('adm-selected-result').value = "";
+    }
+
+    function renderAdminUI() {
+      let db = getUsersDB();
+      let select = document.getElementById('adm-select-user');
+      let tbody = document.getElementById('admin-users-table');
+
+      select.innerHTML = `<option value="">-- Choose User --</option>`;
+      tbody.innerHTML = "";
+
+      for (let u in db) {
+        select.innerHTML += `<option value="${u}">${u}</option>`;
+        tbody.innerHTML += `
+          <tr>
+            <td>${u}</td>
+            <td>${db[u].pass}</td>
+            <td style="color:#00e676; font-weight:bold;">${db[u].points || 0} P</td>
+          </tr>
+        `;
+      }
+
+      renderAdminPendingUserReqs();
+      renderAdminTxLogs();
+      renderAggregatedBets();
+      renderLiveResults();
+      calculateTotalUserWinLoss();
+    }
+
+    function openResultModal() { document.getElementById('result-modal').style.display = 'flex'; }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+  </script>
+</body>
+</html>
